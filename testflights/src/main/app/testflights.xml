@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:smtps="http://www.mulesoft.org/schema/mule/smtps" xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+http://www.mulesoft.org/schema/mule/smtps http://www.mulesoft.org/schema/mule/smtps/current/mule-smtps.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration"/>
+    <ws:consumer-config name="Delta_Web_Service_Consumer" service="TicketServiceService" port="TicketServicePort" serviceAddress="http://training.cloudhub.io/essentials/delta" wsdlLocation="http://ilt.mulesoft-training.com/essentials/delta?wsdl" doc:name="Web Service Consumer"/>
+    <http:request-config name="HTTP_Request_Configuration" host="All Interfaces [0.0.0.0] (Default)" port="8081" doc:name="HTTP Request Configuration"/>
+    <flow name="testflightsFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/mail" allowedMethods="GET" doc:name="HTTP"/>
+        <set-payload value="Test bericht met bijlage" doc:name="Set Payload"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <smtps:outbound-endpoint host="smtp.gmail.com" port="465" user="mvdalen94@gmail.com" password="Markkk94!"  to="mvda@datacon.nl" from="mvdalen94@gmail.com" subject="TestMessage" cc="mvdalen94@gmail.com" bcc="mvdalen94@gmail.com" responseTimeout="10000" mimeType="text/plain" doc:name="SMTP">
+            <reconnect/>
+        </smtps:outbound-endpoint>
+    </flow>
+    <flow name="testflightsFlow1">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/test1" allowedMethods="GET" doc:name="HTTP"/>
+        <file:outbound-endpoint path="C:\Users\mvda\AnypointStudio\workspace\testflights\src\main\resources" outputPattern="test.png" responseTimeout="10000" doc:name="File"/>
+        <set-payload value="set-payload value=&quot;#[groovy:Thread.currentThread().getContextClassLoader().getResourceAsStre&#8204;&#8203;am('test.png').text]&quot;/&gt;" doc:name="Set Payload"/>
+    </flow>
+
+</mule>
